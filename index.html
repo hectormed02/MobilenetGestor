@@ -3,95 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ingreso | MobileNet Solutions SRL</title>
+    <title>Asistencia | MobileNet Entel</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
-        .glass-card { 
-            background: rgba(30, 41, 59, 0.7); 
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        input { 
-            background-color: #1e293b !important; 
-            border: 2px solid #334155 !important; 
-            color: white !important; 
-        }
-        input:focus { border-color: #10b981 !important; outline: none; }
-        .btn-submit {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.39);
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
+        body { font-family: 'Roboto', sans-serif; background-color: #f0f4f8; }
+        .entel-blue-bg { background-color: #0033A0; }
+        .entel-cyan-text { color: #00A9E0; }
+        .btn-entel { background-color: #00A9E0; transition: all 0.3s ease; }
+        .btn-entel:hover:not(:disabled) { background-color: #008cb9; transform: translateY(-1px); }
+        .btn-entel:disabled { opacity: 0.5; cursor: not-allowed; }
+        .card-entel { border-top: 8px solid #00A9E0; border-radius: 20px; }
+        input, select, textarea { border: 2px solid #e2e8f0 !important; border-radius: 12px !important; }
+        input:focus, select:focus, textarea:focus { border-color: #00A9E0 !important; outline: none; }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-6">
 
-    <div class="max-w-md w-full space-y-8">
-        <div class="text-center">
-            <h1 class="text-4xl font-black text-emerald-500 tracking-tighter uppercase">MobileNet</h1>
-            <p class="text-slate-400 text-xs font-bold uppercase tracking-[0.3em] mt-1">Solutions SRL</p>
+    <div class="max-w-md w-full">
+        <div class="text-center mb-8">
+            <div class="inline-block entel-blue-bg px-6 py-3 rounded-2xl shadow-lg mb-3">
+                <h1 class="text-white font-black text-3xl tracking-tighter italic">entel</h1>
+            </div>
+            <p class="text-slate-500 font-bold text-xs uppercase tracking-widest">MobileNet Solutions SRL</p>
         </div>
 
-        <div class="glass-card p-10 rounded-[2.5rem] shadow-2xl">
-            <form id="formIngreso" class="space-y-8 text-center">
+        <div class="bg-white card-entel p-8 shadow-2xl">
+            <form id="formAsistencia" class="space-y-5">
+                
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Identificación de Personal</label>
-                    <input type="number" id="dni" required placeholder="DNI" 
-                        class="w-full p-6 text-4xl text-center rounded-3xl font-mono tracking-widest transition-all">
+                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Documento de Identidad</label>
+                    <input type="number" id="dni" required placeholder="Ingrese su DNI" 
+                        class="w-full p-4 text-xl font-bold text-slate-700 text-center transition-all">
                 </div>
 
-                <button type="submit" id="btnSubmit" 
-                    class="w-full py-6 btn-submit text-white font-black text-xl rounded-3xl active:scale-95 transition-transform uppercase">
-                    Marcar Ingreso
+                <div id="wrapperAsesor" class="hidden bg-slate-50 p-4 rounded-xl border-l-4 border-[#0033A0]">
+                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Nombre del Asesor</label>
+                    <p id="nombreAsesor" class="text-[#0033A0] font-black text-lg uppercase"></p>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Motivo de Registro</label>
+                    <select id="motivo" required class="w-full p-4 bg-white text-slate-700 font-bold cursor-pointer appearance-none">
+                        <option value="INGRESO">INGRESO DIARIO</option>
+                        <option value="CITA CON CLIENTE">CITA CON CLIENTE</option>
+                        <option value="PERMISO CON SUPERVISOR">PERMISO CON SUPERVISOR</option>
+                        <option value="OTROS">OTROS</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Observaciones</label>
+                    <textarea id="observaciones" rows="2" placeholder="Detalle adicional..." 
+                        class="w-full p-4 text-sm text-slate-600 resize-none"></textarea>
+                </div>
+
+                <button type="submit" id="btnSubmit" disabled
+                    class="w-full py-5 btn-entel text-white font-black text-lg rounded-2xl shadow-lg shadow-cyan-500/30">
+                    REGISTRAR ASISTENCIA
                 </button>
             </form>
             
-            <div id="status" class="mt-8 p-4 rounded-2xl text-center hidden font-bold text-sm"></div>
+            <div id="msg" class="mt-6 p-4 rounded-xl text-center hidden font-bold"></div>
         </div>
-        
-        <div class="text-center space-y-2">
-            <p class="text-slate-500 text-[10px] uppercase tracking-widest">Entrada Oficial: 09:00 AM (Tol. 5 min)</p>
-            <p class="text-slate-700 text-[9px] uppercase tracking-widest">© 2026 MobileNet Solutions SRL</p>
-        </div>
+
+        <p class="text-center mt-8 text-slate-400 text-[9px] uppercase tracking-[0.2em] font-bold italic">Transformación Digital • MobileNet 2026</p>
     </div>
 
     <script>
-        // Tu URL de Apps Script proporcionada
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwBAnelD4D_pvmWGXc9fLfqlSX2HzZYCfdkghp-5focrJTdiSHfmD2wTO2xdQj-apr/exec"; 
+        
+        const dniInput = document.getElementById('dni');
+        const btn = document.getElementById('btnSubmit');
+        const nombreDisplay = document.getElementById('nombreAsesor');
+        const wrapperAsesor = document.getElementById('wrapperAsesor');
 
-        document.getElementById('formIngreso').addEventListener('submit', async (e) => {
+        // Búsqueda de nombre en tiempo real
+        dniInput.addEventListener('input', async (e) => {
+            const dni = e.target.value;
+            if (dni.length === 8) {
+                nombreDisplay.innerText = "Verificando...";
+                wrapperAsesor.classList.remove('hidden');
+                
+                try {
+                    const resp = await fetch(`${SCRIPT_URL}?dni=${dni}`);
+                    const data = await resp.json();
+                    
+                    if (data.success) {
+                        nombreDisplay.innerText = data.nombre;
+                        btn.disabled = false;
+                    } else {
+                        nombreDisplay.innerText = "DNI NO ENCONTRADO / INACTIVO";
+                        btn.disabled = true;
+                    }
+                } catch (err) {
+                    nombreDisplay.innerText = "ERROR DE CONEXIÓN";
+                }
+            } else {
+                wrapperAsesor.classList.add('hidden');
+                btn.disabled = true;
+            }
+        });
+
+        // Envío de Formulario
+        document.getElementById('formAsistencia').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('btnSubmit');
-            const status = document.getElementById('status');
-            const dniInput = document.getElementById('dni');
+            const msg = document.getElementById('msg');
             
             btn.disabled = true;
-            btn.innerText = "PROCESANDO...";
-            status.classList.add('hidden');
+            btn.innerText = "ENVIANDO...";
+
+            const payload = {
+                dni: dniInput.value,
+                motivo: document.getElementById('motivo').value,
+                observaciones: document.getElementById('observaciones').value
+            };
 
             try {
-                // Envío mediante POST
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    body: JSON.stringify({ dni: dniInput.value })
+                    body: JSON.stringify(payload)
                 });
 
-                // Éxito (Apps Script recibe no-cors sin devolver JSON legible al cliente)
-                status.innerText = "REGISTRO EXITOSO";
-                status.className = "mt-8 p-4 rounded-2xl text-center bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 block";
-                dniInput.value = "";
+                msg.innerText = "✅ REGISTRO PROCESADO CON ÉXITO";
+                msg.className = "mt-6 p-4 rounded-xl text-center bg-green-100 text-green-700 block";
+                
+                // Limpiar
+                document.getElementById('formAsistencia').reset();
+                wrapperAsesor.classList.add('hidden');
 
             } catch (err) {
-                status.innerText = "ERROR DE CONEXIÓN";
-                status.className = "mt-8 p-4 rounded-2xl text-center bg-red-500/10 text-red-400 border border-red-500/20 block";
+                msg.innerText = "❌ ERROR AL REGISTRAR";
+                msg.className = "mt-6 p-4 rounded-xl text-center bg-red-100 text-red-700 block";
             } finally {
-                btn.disabled = false;
-                btn.innerText = "MARCAR INGRESO";
-                
-                // Limpiar mensaje después de 5 segundos
-                setTimeout(() => { status.classList.add('hidden'); }, 5000);
+                btn.innerText = "REGISTRAR ASISTENCIA";
+                setTimeout(() => { msg.classList.add('hidden'); }, 5000);
             }
         });
     </script>
