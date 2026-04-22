@@ -1,146 +1,91 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asistencia | MobileNet</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
-        body { font-family: 'Roboto', sans-serif; background-color: #f0f4f8; }
-        .entel-blue-bg { background-color: #0033A0; }
-        .entel-cyan-text { color: #00A9E0; }
-        .btn-entel { background-color: #00A9E0; transition: all 0.3s ease; }
-        .btn-entel:hover:not(:disabled) { background-color: #008cb9; transform: translateY(-1px); }
-        .btn-entel:disabled { opacity: 0.5; cursor: not-allowed; }
-        .card-entel { border-top: 8px solid #00A9E0; border-radius: 20px; }
-        input, select, textarea { border: 2px solid #e2e8f0 !important; border-radius: 12px !important; }
-        input:focus, select:focus, textarea:focus { border-color: #00A9E0 !important; outline: none; }
-    </style>
-</head>
-<body class="flex items-center justify-center min-h-screen p-6">
-
-    <div class="max-w-md w-full">
-        <div class="text-center mb-8">
-            <div class="inline-block entel-blue-bg px-6 py-3 rounded-2xl shadow-lg mb-3">
-                <h1 class="text-white font-black text-3xl tracking-tighter italic">entel</h1>
-            </div>
-            <p class="text-slate-500 font-bold text-xs uppercase tracking-widest">MobileNet Solutions SRL</p>
-        </div>
-
-        <div class="bg-white card-entel p-8 shadow-2xl">
-            <form id="formAsistencia" class="space-y-5">
-                
-                <div>
-                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Documento de Identidad</label>
-                    <input type="number" id="dni" required placeholder="Ingrese su DNI" 
-                        class="w-full p-4 text-xl font-bold text-slate-700 text-center transition-all">
-                </div>
-
-                <div id="wrapperAsesor" class="hidden bg-slate-50 p-4 rounded-xl border-l-4 border-[#0033A0]">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Nombre del Asesor</label>
-                    <p id="nombreAsesor" class="text-[#0033A0] font-black text-lg uppercase"></p>
-                </div>
-
-                <div>
-                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Motivo de Registro</label>
-                    <select id="motivo" required class="w-full p-4 bg-white text-slate-700 font-bold cursor-pointer appearance-none">
-                        <option value="INGRESO">INGRESO DIARIO</option>
-                        <option value="CITA CON CLIENTE">CITA CON CLIENTE</option>
-                        <option value="PERMISO CON SUPERVISOR">PERMISO CON SUPERVISOR</option>
-                        <option value="OTROS">OTROS</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Observaciones</label>
-                    <textarea id="observaciones" rows="2" placeholder="Detalle adicional..." 
-                        class="w-full p-4 text-sm text-slate-600 resize-none"></textarea>
-                </div>
-
-                <button type="submit" id="btnSubmit" disabled
-                    class="w-full py-5 btn-entel text-white font-black text-lg rounded-2xl shadow-lg shadow-cyan-500/30">
-                    REGISTRAR ASISTENCIA
-                </button>
-            </form>
+<body class="flex items-center justify-center min-h-screen p-6 bg-slate-100">
+    <div class="max-w-md w-full bg-white p-8 rounded-3xl shadow-2xl border-t-8 border-[#00A9E0]">
+        <h1 class="text-[#0033A0] font-black text-2xl text-center mb-6 italic uppercase">MobileNet Entel</h1>
+        
+        <form id="formAsistencia" class="space-y-4">
+            <input type="number" id="dni" required placeholder="DNI" class="w-full p-4 border-2 rounded-xl text-center text-xl font-bold">
             
-            <div id="msg" class="mt-6 p-4 rounded-xl text-center hidden font-bold"></div>
-        </div>
+            <div id="wrapperAsesor" class="hidden text-center p-2 bg-blue-50 rounded-lg">
+                <p id="nombreAsesor" class="text-[#0033A0] font-bold uppercase"></p>
+            </div>
 
-        <p class="text-center mt-8 text-slate-400 text-[9px] uppercase tracking-[0.2em] font-bold italic">Transformación Digital • MobileNet 2026</p>
+            <div class="relative overflow-hidden rounded-xl bg-black aspect-video mb-2">
+                <video id="video" autoplay playsinline class="w-full h-full object-cover"></video>
+                <canvas id="canvas" class="hidden"></canvas>
+                <img id="preview" class="hidden w-full h-full object-cover absolute top-0 left-0">
+            </div>
+            
+            <button type="button" id="snap" class="w-full py-2 bg-slate-600 text-white font-bold rounded-lg text-xs uppercase">Capturar Foto Evidencia</button>
+
+            <select id="motivo" required class="w-full p-4 border-2 rounded-xl font-bold">
+                <option value="INGRESO">INGRESO DIARIO</option>
+                <option value="CITA CON CLIENTE">CITA CON CLIENTE</option>
+                <option value="PERMISO CON SUPERVISOR">PERMISO CON SUPERVISOR</option>
+                <option value="OTROS">OTROS</option>
+            </select>
+
+            <textarea id="observaciones" placeholder="Observaciones..." class="w-full p-3 border-2 rounded-xl text-sm"></textarea>
+
+            <button type="submit" id="btnSubmit" disabled class="w-full py-5 bg-[#00A9E0] text-white font-black rounded-2xl opacity-50">REGISTRAR</button>
+        </form>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwBAnelD4D_pvmWGXc9fLfqlSX2HzZYCfdkghp-5focrJTdiSHfmD2wTO2xdQj-apr/exec"; 
-        
-        const dniInput = document.getElementById('dni');
-        const btn = document.getElementById('btnSubmit');
-        const nombreDisplay = document.getElementById('nombreAsesor');
-        const wrapperAsesor = document.getElementById('wrapperAsesor');
+        const SCRIPT_URL = "TU_URL_DE_APPS_SCRIPT";
+        let fotoData = "";
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const preview = document.getElementById('preview');
 
-        // Búsqueda de nombre en tiempo real
-        dniInput.addEventListener('input', async (e) => {
-            const dni = e.target.value;
-            if (dni.length === 8) {
-                nombreDisplay.innerText = "Verificando...";
-                wrapperAsesor.classList.remove('hidden');
-                
-                try {
-                    const resp = await fetch(`${SCRIPT_URL}?dni=${dni}`);
-                    const data = await resp.json();
-                    
-                    if (data.success) {
-                        nombreDisplay.innerText = data.nombre;
-                        btn.disabled = false;
-                    } else {
-                        nombreDisplay.innerText = "DNI NO ENCONTRADO / INACTIVO";
-                        btn.disabled = true;
-                    }
-                } catch (err) {
-                    nombreDisplay.innerText = "ERROR DE CONEXIÓN";
+        // Activar Cámara
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+            .then(stream => { video.srcObject = stream; });
+
+        document.getElementById('snap').addEventListener('click', () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            fotoData = canvas.toDataURL('image/jpeg');
+            preview.src = fotoData;
+            preview.classList.remove('hidden');
+            document.getElementById('snap').innerText = "VOLVER A TOMAR FOTO";
+        });
+
+        // Búsqueda de DNI y habilitar botón
+        document.getElementById('dni').addEventListener('input', async (e) => {
+            if(e.target.value.length === 8) {
+                const r = await fetch(`${SCRIPT_URL}?dni=${e.target.value}`);
+                const d = await r.json();
+                if(d.success) {
+                    document.getElementById('nombreAsesor').innerText = d.nombre;
+                    document.getElementById('wrapperAsesor').classList.remove('hidden');
+                    document.getElementById('btnSubmit').disabled = false;
+                    document.getElementById('btnSubmit').classList.remove('opacity-50');
                 }
-            } else {
-                wrapperAsesor.classList.add('hidden');
-                btn.disabled = true;
             }
         });
 
-        // Envío de Formulario
         document.getElementById('formAsistencia').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const msg = document.getElementById('msg');
+            if(!fotoData) return alert("Debes tomar una foto");
             
-            btn.disabled = true;
+            const btn = document.getElementById('btnSubmit');
             btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
 
-            const payload = {
-                dni: dniInput.value,
-                motivo: document.getElementById('motivo').value,
-                observaciones: document.getElementById('observaciones').value
-            };
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({
+                    dni: document.getElementById('dni').value,
+                    motivo: document.getElementById('motivo').value,
+                    observaciones: document.getElementById('observaciones').value,
+                    foto: fotoData
+                })
+            });
 
-            try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify(payload)
-                });
-
-                msg.innerText = "✅ REGISTRO PROCESADO CON ÉXITO";
-                msg.className = "mt-6 p-4 rounded-xl text-center bg-green-100 text-green-700 block";
-                
-                // Limpiar
-                document.getElementById('formAsistencia').reset();
-                wrapperAsesor.classList.add('hidden');
-
-            } catch (err) {
-                msg.innerText = "❌ ERROR AL REGISTRAR";
-                msg.className = "mt-6 p-4 rounded-xl text-center bg-red-100 text-red-700 block";
-            } finally {
-                btn.innerText = "REGISTRAR ASISTENCIA";
-                setTimeout(() => { msg.classList.add('hidden'); }, 5000);
-            }
+            alert("Registro Exitoso");
+            location.reload();
         });
     </script>
 </body>
-</html>
