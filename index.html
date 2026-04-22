@@ -3,95 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Marcación | Padilla Deportes</title>
+    <title>Ingreso | MobileNet Solutions SRL</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #111827; color: white; }
-        .card { background-color: #1f2937; border: 1px solid #374151; }
-        input, select, textarea { background-color: #374151 !important; border: 1px solid #4b5563 !important; color: white !important; }
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .glass-card { 
+            background: rgba(30, 41, 59, 0.7); 
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        input { 
+            background-color: #1e293b !important; 
+            border: 2px solid #334155 !important; 
+            color: white !important; 
+        }
+        input:focus { border-color: #10b981 !important; outline: none; }
+        .btn-submit {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.39);
+        }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4">
+<body class="flex items-center justify-center min-h-screen p-6">
 
-    <div class="max-w-md w-full">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-blue-500">PADILLA DEPORTES</h1>
-            <p class="text-gray-400">Control de Asistencia</p>
+    <div class="max-w-md w-full space-y-8">
+        <div class="text-center">
+            <h1 class="text-4xl font-black text-emerald-500 tracking-tighter uppercase">MobileNet</h1>
+            <p class="text-slate-400 text-xs font-bold uppercase tracking-[0.3em] mt-1">Solutions SRL</p>
         </div>
 
-        <div class="card p-8 rounded-2xl shadow-2xl">
-            <form id="checkInForm" class="space-y-6">
+        <div class="glass-card p-10 rounded-[2.5rem] shadow-2xl">
+            <form id="formIngreso" class="space-y-8 text-center">
                 <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Ingrese su DNI</label>
-                    <input type="number" id="dni" required placeholder="Ej: 70654321" 
-                        class="w-full p-4 text-2xl text-center rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition-all">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Motivo de Marcación</label>
-                    <select id="motivo" required class="w-full p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="INGRESO">ENTRADA (09:00 AM)</option>
-                        <option value="REFRIGERIO_SALIDA">SALIDA REFRIGERIO</option>
-                        <option value="REFRIGERIO_RETORNO">RETORNO REFRIGERIO</option>
-                        <option value="SALIDA">SALIDA FINAL</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Observaciones (Opcional)</label>
-                    <textarea id="observaciones" rows="2" class="w-full p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Identificación de Personal</label>
+                    <input type="number" id="dni" required placeholder="DNI" 
+                        class="w-full p-6 text-4xl text-center rounded-3xl font-mono tracking-widest transition-all">
                 </div>
 
                 <button type="submit" id="btnSubmit" 
-                    class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg rounded-xl transition-all active:scale-95">
-                    MARCAR ASISTENCIA
+                    class="w-full py-6 btn-submit text-white font-black text-xl rounded-3xl active:scale-95 transition-transform uppercase">
+                    Marcar Ingreso
                 </button>
             </form>
-            <div id="statusMessage" class="mt-4 text-center hidden"></div>
+            
+            <div id="status" class="mt-8 p-4 rounded-2xl text-center hidden font-bold text-sm"></div>
+        </div>
+        
+        <div class="text-center space-y-2">
+            <p class="text-slate-500 text-[10px] uppercase tracking-widest">Entrada Oficial: 09:00 AM (Tol. 5 min)</p>
+            <p class="text-slate-700 text-[9px] uppercase tracking-widest">© 2026 MobileNet Solutions SRL</p>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = "TU_URL_DE_APPS_SCRIPT_AQUI";
+        // Tu URL de Apps Script proporcionada
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwBAnelD4D_pvmWGXc9fLfqlSX2HzZYCfdkghp-5focrJTdiSHfmD2wTO2xdQj-apr/exec"; 
 
-        document.getElementById('checkInForm').addEventListener('submit', async (e) => {
+        document.getElementById('formIngreso').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnSubmit');
-            const status = document.getElementById('statusMessage');
+            const status = document.getElementById('status');
+            const dniInput = document.getElementById('dni');
             
             btn.disabled = true;
-            btn.innerText = "Procesando...";
+            btn.innerText = "PROCESANDO...";
             status.classList.add('hidden');
 
-            const payload = {
-                dni: document.getElementById('dni').value,
-                motivo: document.getElementById('motivo').value,
-                observaciones: document.getElementById('observaciones').value
-            };
-
             try {
-                // Usamos POST para enviar el DNI
-                const response = await fetch(SCRIPT_URL, {
+                // Envío mediante POST
+                await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify({ dni: dniInput.value })
                 });
 
-                // Como es 'no-cors', no podemos leer la respuesta, pero si no hay error en el catch, se envió.
-                status.innerText = "✅ ¡Marcación enviada con éxito!";
-                status.className = "mt-4 text-center text-green-400 font-bold";
-                status.classList.remove('hidden');
-                
-                document.getElementById('dni').value = "";
-                document.getElementById('observaciones').value = "";
+                // Éxito (Apps Script recibe no-cors sin devolver JSON legible al cliente)
+                status.innerText = "REGISTRO EXITOSO";
+                status.className = "mt-8 p-4 rounded-2xl text-center bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 block";
+                dniInput.value = "";
 
             } catch (err) {
-                status.innerText = "❌ Error de conexión";
-                status.className = "mt-4 text-center text-red-400 font-bold";
-                status.classList.remove('hidden');
+                status.innerText = "ERROR DE CONEXIÓN";
+                status.className = "mt-8 p-4 rounded-2xl text-center bg-red-500/10 text-red-400 border border-red-500/20 block";
             } finally {
                 btn.disabled = false;
-                btn.innerText = "MARCAR ASISTENCIA";
+                btn.innerText = "MARCAR INGRESO";
+                
+                // Limpiar mensaje después de 5 segundos
+                setTimeout(() => { status.classList.add('hidden'); }, 5000);
             }
         });
     </script>
