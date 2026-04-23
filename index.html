@@ -3,152 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asistencia | MobileNet Entel</title>
+    <title>Entel | MobileNet</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
-        body { font-family: 'Roboto', sans-serif; background-color: #f4f7f9; }
-        .entel-blue { background-color: #0033A0; }
-        .btn-entel { background-color: #00A9E0; transition: all 0.3s; }
-        .btn-entel:hover:not(:disabled) { background-color: #008cb9; }
-        .card-entel { border-top: 8px solid #00A9E0; border-radius: 20px; }
-        #video { transform: scaleX(-1); } /* Efecto espejo para la cámara frontal */
-    </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4">
+<body class="bg-slate-100 flex justify-center min-h-screen items-center p-4">
+    <div class="max-w-md w-full bg-white rounded-3xl shadow-xl overflow-hidden border-t-8 border-[#00A9E0]">
+        <div class="bg-[#0033A0] p-4 text-center">
+            <h1 class="text-white font-black italic text-2xl italic">entel</h1>
+        </div>
+        
+        <form id="f" class="p-6 space-y-4">
+            <input type="number" id="d" placeholder="DNI" required class="w-full p-4 text-2xl text-center border-2 rounded-2xl font-bold outline-none focus:border-[#00A9E0]">
+            
+            <div id="w" class="hidden p-3 bg-blue-50 rounded-xl border-l-4 border-[#0033A0] text-center font-bold text-[#0033A0] uppercase text-sm"></div>
 
-    <div class="max-w-md w-full">
-        <div class="text-center mb-6">
-            <div class="inline-block entel-blue p-4 rounded-2xl shadow-lg mb-2">
-                <h1 class="text-white font-black text-2xl tracking-tighter italic">entel</h1>
+            <div class="relative rounded-xl overflow-hidden bg-black aspect-video">
+                <video id="v" autoplay playsinline class="w-full h-full object-cover"></video>
+                <img id="p" class="hidden absolute inset-0 w-full h-full object-cover">
             </div>
-            <p class="text-slate-500 font-bold text-[10px] uppercase tracking-widest">MobileNet Solutions SRL</p>
-        </div>
+            
+            <button type="button" id="s" class="w-full py-2 bg-slate-600 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest">Tomar Foto</button>
 
-        <div class="bg-white card-entel p-8 rounded-2xl shadow-2xl">
-            <form id="formAsistencia" class="space-y-4">
-                
-                <div>
-                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Documento de Identidad</label>
-                    <input type="number" id="dni" required placeholder="DNI" 
-                        class="w-full p-4 text-2xl text-center border-2 border-slate-100 rounded-xl focus:border-[#00A9E0] outline-none transition-all font-bold text-slate-700">
-                </div>
+            <select id="m" class="w-full p-4 border-2 rounded-2xl font-bold outline-none">
+                <option value="INGRESO">INGRESO DIARIO</option>
+                <option value="CITA CON CLIENTE">CITA CON CLIENTE</option>
+                <option value="PERMISO CON SUPERVISOR">PERMISO CON SUPERVISOR</option>
+            </select>
 
-                <div id="wrapperAsesor" class="hidden bg-blue-50 p-3 rounded-xl border-l-4 border-[#0033A0]">
-                    <p id="nombreAsesor" class="text-[#0033A0] font-black text-center text-sm uppercase"></p>
-                </div>
-
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase ml-1">Evidencia Fotográfica</label>
-                    <div class="relative overflow-hidden aspect-video bg-black rounded-xl border-2 border-slate-100">
-                        <video id="video" autoplay playsinline class="w-full h-full object-cover"></video>
-                        <canvas id="canvas" class="hidden"></canvas>
-                        <img id="preview" class="hidden w-full h-full object-cover absolute top-0 left-0 bg-white">
-                    </div>
-                    <button type="button" id="snap" class="w-full py-3 bg-slate-600 text-white font-bold rounded-xl text-[10px] uppercase tracking-wider">Capturar Foto</button>
-                </div>
-
-                <select id="motivo" required class="w-full p-4 border-2 border-slate-100 rounded-xl font-bold text-slate-700 cursor-pointer outline-none">
-                    <option value="INGRESO">INGRESO DIARIO</option>
-                    <option value="CITA CON CLIENTE">CITA CON CLIENTE</option>
-                    <option value="PERMISO CON SUPERVISOR">PERMISO CON SUPERVISOR</option>
-                    <option value="OTROS">OTROS</option>
-                </select>
-
-                <textarea id="observaciones" rows="2" placeholder="Observaciones..." class="w-full p-3 border-2 border-slate-100 rounded-xl text-xs resize-none outline-none"></textarea>
-
-                <button type="submit" id="btnSubmit" disabled
-                    class="w-full py-5 btn-entel text-white font-black text-lg rounded-xl opacity-50 cursor-not-allowed">
-                    REGISTRAR ASISTENCIA
-                </button>
-            </form>
-            <div id="msg" class="mt-4 p-4 rounded-xl text-center hidden font-bold text-sm"></div>
-        </div>
+            <button type="submit" id="go" disabled class="w-full py-5 bg-[#00A9E0] text-white font-black rounded-2xl opacity-50 uppercase tracking-widest transition-all">Registrar</button>
+        </form>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwBAnelD4D_pvmWGXc9fLfqlSX2HzZYCfdkghp-5focrJTdiSHfmD2wTO2xdQj-apr/exec"; 
-        
-        let fotoData = "";
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const preview = document.getElementById('preview');
-        const btn = document.getElementById('btnSubmit');
+        const URL = "https://script.google.com/macros/s/AKfycbxwBAnelD4D_pvmWGXc9fLfqlSX2HzZYCfdkghp-5focrJTdiSHfmD2wTO2xdQj-apr/exec";
+        let db = [], foto = "";
+        const v = document.getElementById('v'), d = document.getElementById('d'), w = document.getElementById('w'), go = document.getElementById('go');
 
-        // INICIALIZAR CÁMARA CON MANEJO DE ERRORES
-        async function initCamera() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } } 
-                });
-                video.srcObject = stream;
-            } catch (err) {
-                console.error("Error al acceder a la cámara: ", err);
-                alert("No se pudo cargar la cámara. Asegúrate de estar usando HTTPS y haber dado permisos.");
-            }
-        }
+        // 1. Carga inmediata de cámara y base de datos
+        navigator.mediaDevices.getUserMedia({video: {facingMode:"user"}}).then(s => v.srcObject = s);
+        fetch(URL).then(r => r.json()).then(data => db = data);
 
-        document.getElementById('snap').addEventListener('click', () => {
-            if (video.srcObject) {
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                canvas.getContext('2d').drawImage(video, 0, 0);
-                fotoData = canvas.toDataURL('image/jpeg', 0.7);
-                preview.src = fotoData;
-                preview.classList.remove('hidden');
-                document.getElementById('snap').innerText = "VOLVER A TOMAR FOTO";
-            }
-        });
-
-        document.getElementById('dni').addEventListener('input', async (e) => {
-            const dni = e.target.value;
-            if(dni.length === 8) {
-                document.getElementById('nombreAsesor').innerText = "Buscando...";
-                document.getElementById('wrapperAsesor').classList.remove('hidden');
-                try {
-                    const r = await fetch(`${SCRIPT_URL}?dni=${dni}`);
-                    const d = await r.json();
-                    if(d.success) {
-                        document.getElementById('nombreAsesor').innerText = d.nombre;
-                        btn.disabled = false;
-                        btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                    } else {
-                        document.getElementById('nombreAsesor').innerText = "DNI NO ENCONTRADO O INACTIVO";
-                    }
-                } catch(e) { console.error("Error buscando DNI", e); }
+        // 2. Búsqueda local (0ms de espera)
+        d.oninput = () => {
+            const u = db.find(x => x.dni === d.value);
+            if (u) {
+                w.innerText = u.nombre;
+                w.classList.remove('hidden');
+                go.disabled = false;
+                go.classList.remove('opacity-50');
             } else {
-                document.getElementById('wrapperAsesor').classList.add('hidden');
-                btn.disabled = true;
-                btn.classList.add('opacity-50', 'cursor-not-allowed');
+                w.classList.add('hidden');
+                go.disabled = true;
+                go.classList.add('opacity-50');
             }
-        });
+        };
 
-        document.getElementById('formAsistencia').addEventListener('submit', async (e) => {
+        // 3. Foto rápida
+        document.getElementById('s').onclick = () => {
+            const c = document.createElement('canvas');
+            c.width = v.videoWidth; c.height = v.videoHeight;
+            c.getContext('2d').drawImage(v, 0, 0);
+            foto = c.toDataURL('image/jpeg', 0.6);
+            document.getElementById('p').src = foto;
+            document.getElementById('p').classList.remove('hidden');
+        };
+
+        // 4. Envío
+        document.getElementById('f').onsubmit = async (e) => {
             e.preventDefault();
-            if(!fotoData) return alert("Debe capturar su foto para continuar.");
-            
-            btn.innerText = "REGISTRANDO...";
-            btn.disabled = true;
-
-            const payload = {
-                dni: document.getElementById('dni').value,
-                motivo: document.getElementById('motivo').value,
-                observaciones: document.getElementById('observaciones').value,
-                foto: fotoData
-            };
-
-            try {
-                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-                alert("Asistencia registrada correctamente.");
-                location.reload();
-            } catch(e) {
-                alert("Error de conexión con el servidor.");
-                btn.innerText = "REGISTRAR ASISTENCIA";
-                btn.disabled = false;
-            }
-        });
-
-        initCamera();
+            if(!foto) return alert("Falta foto");
+            go.innerText = "REGISTRANDO..."; go.disabled = true;
+            await fetch(URL, {method:'POST', mode:'no-cors', body: JSON.stringify({dni: d.value, motivo: document.getElementById('m').value, foto: foto})});
+            alert("Listo"); location.reload();
+        };
     </script>
 </body>
 </html>
