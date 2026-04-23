@@ -6,125 +6,130 @@
     <title>Asistencia | MobileNet Solutions</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #f8fafc; font-family: 'Inter', sans-serif; }
-        .brand-card { border-radius: 2.5rem; border-top: 6px solid #0284c7; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08); }
-        .input-pill { border-radius: 1.2rem; border: 1.5px solid #e2e8f0; text-align: center; font-weight: 700; transition: 0.2s; }
-        .input-pill:focus { border-color: #0284c7; outline: none; }
-        .btn-capture { border-radius: 1.2rem; background-color: #334155; color: white; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; }
-        .btn-submit { border-radius: 1.2rem; background-color: #0284c7; color: white; font-weight: 800; font-size: 1.25rem; text-transform: uppercase; box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.3); }
-        .btn-submit:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; }
-        video, img { border-radius: 1.5rem; background-color: #000; }
-        .label-text { font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 0.4rem; display: block; margin-left: 0.5rem; }
+        body { background-color: #f8fafc; font-family: ui-sans-serif, system-ui, sans-serif; }
+        .main-card { border-radius: 2.5rem; border-top: 6px solid #0ea5e9; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); }
+        .input-field { border-radius: 1.2rem; border: 1.5px solid #e2e8f0; text-align: center; font-weight: 700; outline: none; transition: 0.3s; }
+        .input-field:focus { border-color: #0ea5e9; box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1); }
+        .btn-capture { border-radius: 1.2rem; background-color: #475569; color: white; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; }
+        .btn-register { border-radius: 1.2rem; background-color: #bae6fd; color: #0369a1; font-weight: 800; text-transform: uppercase; transition: 0.3s; }
+        .btn-register.active { background-color: #7dd3fc; color: #0369a1; box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.3); cursor: pointer; }
+        .label-title { font-size: 0.65rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-left: 0.5rem; margin-bottom: 0.4rem; display: block; }
+        video, img { border-radius: 1.5rem; background-color: #000; object-fit: cover; }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
 
-    <div class="max-w-md w-full space-y-6">
+    <div class="max-w-md w-full space-y-4">
         <div class="text-center">
-            <div class="bg-blue-900 inline-block px-10 py-5 rounded-[2rem] shadow-xl mb-3">
-                <h1 class="text-white font-black text-3xl tracking-tighter uppercase italic">MobileNet</h1>
+            <div class="bg-[#0033A0] inline-block px-10 py-5 rounded-3xl shadow-xl mb-2">
+                <h1 class="text-white font-black text-2xl tracking-tighter uppercase italic">MobileNet</h1>
             </div>
-            <p class="text-slate-400 font-bold text-[10px] tracking-[0.2em] uppercase">Solutions SRL - Registro Personal</p>
+            <p class="text-slate-400 font-bold text-[10px] tracking-[0.2em] uppercase">Solutions SRL</p>
         </div>
 
-        <div class="bg-white brand-card p-8 space-y-6">
-            <form id="mainForm" class="space-y-5">
+        <div class="bg-white main-card p-8 space-y-6">
+            <form id="attendanceForm" class="space-y-5">
                 
                 <div>
-                    <label class="label-text">Documento de Identidad</label>
-                    <input type="number" id="dni" required placeholder="DNI" class="w-full input-pill p-5 text-3xl text-slate-700">
-                    <div id="nameDisplay" class="hidden mt-4 p-4 bg-blue-50 rounded-2xl border-l-4 border-blue-500 transition-all">
-                        <p id="advisorName" class="text-blue-800 font-black text-center text-sm uppercase"></p>
+                    <label class="label-title">Documento de Identidad</label>
+                    <input type="number" id="dni" required placeholder="00000000" class="w-full input-field p-5 text-3xl text-slate-700">
+                    <div id="advisorInfo" class="hidden mt-3 p-3 bg-blue-50 rounded-2xl border-l-4 border-blue-500">
+                        <p id="advisorName" class="text-blue-700 font-black text-center text-xs uppercase tracking-tight"></p>
                     </div>
                 </div>
 
                 <div>
-                    <label class="label-text">Foto de Evidencia</label>
-                    <div class="relative aspect-[4/3] overflow-hidden mb-3">
-                        <video id="video" autoplay playsinline class="w-full h-full object-cover"></video>
-                        <canvas id="canvas" class="hidden"></canvas>
-                        <img id="preview" class="hidden absolute inset-0 w-full h-full object-cover">
+                    <label class="label-title">Evidencia Fotográfica</label>
+                    <div class="relative aspect-[4/3] mb-3">
+                        <video id="video" autoplay playsinline class="w-full h-full"></video>
+                        <img id="preview" class="hidden absolute inset-0 w-full h-full">
                     </div>
-                    <button type="button" id="snap" class="w-full py-4 btn-capture">Capturar Imagen</button>
+                    <button type="button" id="snap" class="w-full py-4 btn-capture">Capturar Foto</button>
                 </div>
 
                 <div>
-                    <label class="label-text">Motivo</label>
-                    <select id="reason" class="w-full input-pill p-4 text-sm text-slate-600 appearance-none cursor-pointer">
+                    <label class="label-title">Motivo</label>
+                    <select id="reason" class="w-full input-field p-4 text-sm text-slate-600 appearance-none cursor-pointer">
                         <option value="INGRESO DIARIO">INGRESO DIARIO</option>
                         <option value="CITA CON CLIENTE">CITA CON CLIENTE</option>
                         <option value="PERMISO CON SUPERVISOR">PERMISO CON SUPERVISOR</option>
                     </select>
                 </div>
 
-                <input type="text" id="notes" placeholder="Observaciones..." class="w-full input-pill p-4 text-xs font-medium italic bg-slate-50 border-none">
+                <input type="text" id="obs" placeholder="Observaciones..." class="w-full input-field p-4 text-sm font-normal italic bg-slate-50 border-none">
 
-                <button type="submit" id="submitBtn" disabled class="w-full py-6 btn-submit">
-                    Registrar
+                <button type="submit" id="submitBtn" disabled class="w-full py-6 btn-register text-xl opacity-50 cursor-not-allowed">
+                    REGISTRAR
                 </button>
             </form>
         </div>
-        <p class="text-center text-slate-400 text-[10px] font-bold uppercase tracking-widest">© 2026 MobileNet Solutions SRL</p>
     </div>
 
     <script>
-        // URL de tu Script actualizado
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwTdfWqQJq_S5RXQCoK94A918Z3WGkCIDRbwecnsurOmbbWiwQCvVjGM9Cum_C62n4Ung/exec";
-        
-        let advisors = [], capturedImg = "";
-        const v = document.getElementById('video'), dni = document.getElementById('dni'), nBox = document.getElementById('nameDisplay'), nText = document.getElementById('advisorName'), btn = document.getElementById('submitBtn');
+        let advisorsList = [], capturedImg = "";
+        const video = document.getElementById('video'), dniInput = document.getElementById('dni'), infoBox = document.getElementById('advisorInfo'), nameText = document.getElementById('advisorName'), submitBtn = document.getElementById('submitBtn');
 
-        // Inicialización: Cámara y carga de datos desde Google Sheets
-        navigator.mediaDevices.getUserMedia({video: {facingMode:"user"}}).then(s => v.srcObject = s);
-        fetch(SCRIPT_URL).then(r => r.json()).then(data => advisors = data);
+        // 1. Cargar Cámara y Base de Datos
+        navigator.mediaDevices.getUserMedia({video: {facingMode:"user"}}).then(s => video.srcObject = s);
+        fetch(SCRIPT_URL).then(r => r.json()).then(data => {
+            advisorsList = data;
+            console.log("Datos cargados:", advisorsList.length);
+        });
 
-        // Búsqueda instantánea en local (No demora nada)
-        dni.oninput = () => {
-            const found = advisors.find(a => a.dni === dni.value);
+        // 2. Validación de DNI (Activa el botón)
+        dniInput.oninput = () => {
+            const val = dniInput.value.trim();
+            const found = advisorsList.find(a => a.dni === val);
+            
             if (found) {
-                nText.innerText = `Hola, ${found.nombre}`;
-                nBox.classList.remove('hidden');
-                btn.disabled = false;
+                nameText.innerText = `ASESOR: ${found.nombre}`;
+                infoBox.classList.remove('hidden');
+                submitBtn.disabled = false;
+                submitBtn.classList.add('active');
+                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
             } else {
-                nBox.classList.add('hidden');
-                btn.disabled = true;
+                infoBox.classList.add('hidden');
+                submitBtn.disabled = true;
+                submitBtn.classList.remove('active', 'opacity-50', 'cursor-not-allowed');
+                submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
             }
         };
 
-        // Captura de fotografía
+        // 3. Captura
         document.getElementById('snap').onclick = () => {
-            const c = document.getElementById('canvas');
-            c.width = v.videoWidth; c.height = v.videoHeight;
-            c.getContext('2d').drawImage(v, 0, 0);
-            capturedImg = c.toDataURL('image/jpeg', 0.6);
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            capturedImg = canvas.toDataURL('image/jpeg', 0.6);
             document.getElementById('preview').src = capturedImg;
             document.getElementById('preview').classList.remove('hidden');
-            document.getElementById('snap').innerText = "Volver a capturar";
+            document.getElementById('snap').innerText = "VOLVER A CAPTURAR";
         };
 
-        // Proceso de Envío
-        document.getElementById('mainForm').onsubmit = async (e) => {
+        // 4. Envío
+        document.getElementById('attendanceForm').onsubmit = async (e) => {
             e.preventDefault();
-            if(!capturedImg) return alert("Es obligatorio capturar la foto de evidencia.");
+            if(!capturedImg) return alert("Por favor, capture su foto.");
             
-            btn.innerText = "ENVIANDO..."; btn.disabled = true;
+            submitBtn.innerText = "REGISTRANDO..."; submitBtn.disabled = true;
 
             try {
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     body: JSON.stringify({
-                        dni: dni.value,
+                        dni: dniInput.value,
                         motivo: document.getElementById('reason').value,
-                        obs: document.getElementById('notes').value,
+                        obs: document.getElementById('obs').value,
                         foto: capturedImg
                     })
                 });
-                alert("¡Registro completado con éxito!");
+                alert("✅ Registro exitoso.");
                 location.reload();
             } catch (err) {
-                alert("Error al conectar con el servidor. Intente de nuevo.");
-                btn.innerText = "REGISTRAR"; btn.disabled = false;
+                alert("❌ Error de red.");
+                submitBtn.innerText = "REGISTRAR"; submitBtn.disabled = false;
             }
         };
     </script>
