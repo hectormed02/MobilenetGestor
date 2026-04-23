@@ -3,78 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entel | MobileNet</title>
+    <title>Asistencia | MobileNet Entel</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
+        body { font-family: 'Roboto', sans-serif; background-color: #f1f5f9; }
+        .entel-blue { background-color: #0033A0; }
+        .entel-cyan { background-color: #00A9E0; }
+        .card-shadow { box-shadow: 0 20px 25px -5px rgba(0, 51, 160, 0.1), 0 10px 10px -5px rgba(0, 51, 160, 0.04); }
+        video { transform: scaleX(-1); border-radius: 1rem; }
+    </style>
 </head>
-<body class="bg-slate-100 flex justify-center min-h-screen items-center p-4">
-    <div class="max-w-md w-full bg-white rounded-3xl shadow-xl overflow-hidden border-t-8 border-[#00A9E0]">
-        <div class="bg-[#0033A0] p-4 text-center">
-            <h1 class="text-white font-black italic text-2xl italic">entel</h1>
-        </div>
-        
-        <form id="f" class="p-6 space-y-4">
-            <input type="number" id="d" placeholder="DNI" required class="w-full p-4 text-2xl text-center border-2 rounded-2xl font-bold outline-none focus:border-[#00A9E0]">
-            
-            <div id="w" class="hidden p-3 bg-blue-50 rounded-xl border-l-4 border-[#0033A0] text-center font-bold text-[#0033A0] uppercase text-sm"></div>
+<body class="flex items-center justify-center min-h-screen p-4">
 
-            <div class="relative rounded-xl overflow-hidden bg-black aspect-video">
-                <video id="v" autoplay playsinline class="w-full h-full object-cover"></video>
-                <img id="p" class="hidden absolute inset-0 w-full h-full object-cover">
+    <div class="max-w-md w-full">
+        <div class="text-center mb-6">
+            <div class="inline-block entel-blue px-6 py-3 rounded-2xl mb-2">
+                <h1 class="text-white font-black text-3xl italic tracking-tighter">entel</h1>
             </div>
-            
-            <button type="button" id="s" class="w-full py-2 bg-slate-600 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest">Tomar Foto</button>
+            <p class="text-slate-500 font-bold text-[10px] uppercase tracking-widest">MobileNet Solutions SRL</p>
+        </div>
 
-            <select id="m" class="w-full p-4 border-2 rounded-2xl font-bold outline-none">
-                <option value="INGRESO">INGRESO DIARIO</option>
-                <option value="CITA CON CLIENTE">CITA CON CLIENTE</option>
-                <option value="PERMISO CON SUPERVISOR">PERMISO CON SUPERVISOR</option>
-            </select>
+        <div class="bg-white card-shadow rounded-[2rem] overflow-hidden border-t-8 border-[#00A9E0]">
+            <form id="formAsis" class="p-8 space-y-5">
+                
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Documento de Identidad</label>
+                    <input type="number" id="dni" required placeholder="DNI" 
+                        class="w-full p-4 text-3xl text-center border-2 border-slate-100 rounded-2xl focus:border-[#00A9E0] outline-none transition-all font-bold text-slate-700">
+                </div>
 
-            <button type="submit" id="go" disabled class="w-full py-5 bg-[#00A9E0] text-white font-black rounded-2xl opacity-50 uppercase tracking-widest transition-all">Registrar</button>
-        </form>
+                <div id="nombreWrap" class="hidden p-3 bg-blue-50 rounded-xl border-l-4 border-[#0033A0] text-center">
+                    <p id="nombreAsesor" class="text-[#0033A0] font-black text-sm uppercase"></p>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="relative aspect-video bg-black rounded-2xl overflow-hidden">
+                        <video id="video" autoplay playsinline class="w-full h-full object-cover"></video>
+                        <img id="preview" class="hidden absolute inset-0 w-full h-full object-cover bg-white">
+                    </div>
+                    <button type="button" id="snap" class="w-full py-3 bg-slate-600 text-white font-bold rounded-xl text-[10px] uppercase tracking-widest hover:bg-slate-700">Capturar Foto</button>
+                </div>
+
+                <select id="motivo" class="w-full p-4 border-2 border-slate-100 rounded-2xl font-bold text-slate-700 outline-none appearance-none cursor-pointer">
+                    <option value="INGRESO">INGRESO DIARIO</option>
+                    <option value="CITA CON CLIENTE">CITA CON CLIENTE</option>
+                    <option value="PERMISO CON SUPERVISOR">PERMISO CON SUPERVISOR</option>
+                    <option value="OTROS">OTROS</option>
+                </select>
+
+                <button type="submit" id="btnSubmit" disabled
+                    class="w-full py-5 entel-cyan text-white font-black text-lg rounded-2xl opacity-50 cursor-not-allowed shadow-lg shadow-cyan-500/30 uppercase tracking-widest transition-all">
+                    Registrar Asistencia
+                </button>
+            </form>
+        </div>
     </div>
 
     <script>
-        const URL = "https://script.google.com/macros/s/AKfycbwTdfWqQJq_S5RXQCoK94A918Z3WGkCIDRbwecnsurOmbbWiwQCvVjGM9Cum_C62n4Ung/exec";
-        let db = [], foto = "";
-        const v = document.getElementById('v'), d = document.getElementById('d'), w = document.getElementById('w'), go = document.getElementById('go');
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwTdfWqQJq_S5RXQCoK94A918Z3WGkCIDRbwecnsurOmbbWiwQCvVjGM9Cum_C62n4Ung/exec";
+        let asesores = [], foto = "";
+        const v = document.getElementById('video'), d = document.getElementById('dni'), n = document.getElementById('nombreAsesor'), w = document.getElementById('nombreWrap'), btn = document.getElementById('btnSubmit');
 
-        // 1. Carga inmediata de cámara y base de datos
+        // 1. Iniciar cámara y cargar lista de asesores de inmediato
         navigator.mediaDevices.getUserMedia({video: {facingMode:"user"}}).then(s => v.srcObject = s);
-        fetch(URL).then(r => r.json()).then(data => db = data);
+        fetch(SCRIPT_URL).then(r => r.json()).then(data => asesores = data);
 
-        // 2. Búsqueda local (0ms de espera)
+        // 2. Búsqueda instantánea de nombre
         d.oninput = () => {
-            const u = db.find(x => x.dni === d.value);
-            if (u) {
-                w.innerText = u.nombre;
+            const user = asesores.find(a => a.dni === d.value);
+            if (user) {
+                n.innerText = user.nombre;
                 w.classList.remove('hidden');
-                go.disabled = false;
-                go.classList.remove('opacity-50');
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
             } else {
                 w.classList.add('hidden');
-                go.disabled = true;
-                go.classList.add('opacity-50');
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
             }
         };
 
-        // 3. Foto rápida
-        document.getElementById('s').onclick = () => {
+        // 3. Captura de foto
+        document.getElementById('snap').onclick = () => {
             const c = document.createElement('canvas');
             c.width = v.videoWidth; c.height = v.videoHeight;
             c.getContext('2d').drawImage(v, 0, 0);
             foto = c.toDataURL('image/jpeg', 0.6);
-            document.getElementById('p').src = foto;
-            document.getElementById('p').classList.remove('hidden');
+            document.getElementById('preview').src = foto;
+            document.getElementById('preview').classList.remove('hidden');
+            document.getElementById('snap').innerText = "VOLVER A CAPTURAR";
         };
 
-        // 4. Envío
-        document.getElementById('f').onsubmit = async (e) => {
+        // 4. Envío de datos
+        document.getElementById('formAsis').onsubmit = async (e) => {
             e.preventDefault();
-            if(!foto) return alert("Falta foto");
-            go.innerText = "REGISTRANDO..."; go.disabled = true;
-            await fetch(URL, {method:'POST', mode:'no-cors', body: JSON.stringify({dni: d.value, motivo: document.getElementById('m').value, foto: foto})});
-            alert("Listo"); location.reload();
+            if(!foto) return alert("Por favor, capture su foto de evidencia.");
+            
+            btn.innerText = "REGISTRANDO..."; btn.disabled = true;
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({
+                        dni: d.value,
+                        motivo: document.getElementById('motivo').value,
+                        foto: foto
+                    })
+                });
+                alert("✅ Registro guardado exitosamente.");
+                location.reload();
+            } catch (err) {
+                alert("❌ Error de conexión.");
+                btn.innerText = "REGISTRAR ASISTENCIA"; btn.disabled = false;
+            }
         };
     </script>
 </body>
