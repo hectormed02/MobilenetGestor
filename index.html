@@ -3,79 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MobileNet Solutions - Asistencia</title>
+    <title>Asistencia MobileNet</title>
     <style>
-        :root {
-            --bg-color: #f0f4f8;
-            --container-bg: #ffffff;
-            --text-main: #333333;
-            --text-muted: #666666;
-            --primary-blue: #0056b3;
-            --light-blue: #e0f0ff;
-            --border-color: #cccccc;
-        }
-
-        [data-theme="dark"] {
-            --bg-color: #121212;
-            --container-bg: #1e1e1e;
-            --text-main: #ffffff;
-            --text-muted: #aaaaaa;
-            --primary-blue: #4da3ff;
-            --light-blue: #003366;
-            --border-color: #444444;
-        }
-
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; transition: background-color 0.3s; }
-        .container { background-color: var(--container-bg); padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; position: relative; transition: background-color 0.3s; }
-        
-        .header-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .btn-icon { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-main); }
-        
-        h2 { text-align: center; color: var(--primary-blue); margin-top: 0; }
-        .clock { font-size: 2rem; text-align: center; font-weight: bold; margin-bottom: 20px; color: var(--primary-blue); background-color: var(--light-blue); padding: 10px; border-radius: 8px; }
-        
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 500; }
-        input, select { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; box-sizing: border-box; background-color: var(--container-bg); color: var(--text-main); }
-        input[readonly] { background-color: var(--bg-color); }
-        
-        .camera-container { width: 100%; aspect-ratio: 4/3; background-color: #000; border-radius: 8px; overflow: hidden; margin-bottom: 15px; position: relative; }
+        :root { --bg: #f0f4f8; --card: #fff; --text: #333; --blue: #0056b3; --light-blue: #e0f0ff; --border: #ccc; }
+        [data-theme="dark"] { --bg: #121212; --card: #1e1e1e; --text: #fff; --blue: #4da3ff; --light-blue: #003366; --border: #444; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; transition: 0.3s; }
+        .container { background: var(--card); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        .header { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        h2 { text-align: center; color: var(--blue); margin: 0; }
+        .clock { font-size: 1.8rem; text-align: center; font-weight: bold; margin: 15px 0; color: var(--blue); background: var(--light-blue); padding: 10px; border-radius: 8px; }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 4px; font-size: 0.9rem; }
+        input, select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: var(--card); color: var(--text); }
+        input[readonly] { background: var(--bg); opacity: 0.8; }
+        .camera-box { width: 100%; aspect-ratio: 4/3; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 15px; }
         video { width: 100%; height: 100%; object-fit: cover; }
-        
-        button.primary { width: 100%; padding: 12px; background-color: var(--primary-blue); color: white; border: none; border-radius: 6px; font-size: 1.1rem; cursor: pointer; font-weight: bold; transition: opacity 0.2s; }
-        button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
-        button.primary:hover:not(:disabled) { opacity: 0.9; }
-
-        .loader { display: none; text-align: center; margin-top: 10px; color: var(--primary-blue); }
-
-        /* Modal Admin */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 100; }
-        .modal-content { background: var(--container-bg); padding: 20px; border-radius: 8px; width: 300px; text-align: center; }
+        button.main { width: 100%; padding: 12px; background: var(--blue); color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .loader { display: none; text-align: center; color: var(--blue); font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="header-controls">
-            <button class="btn-icon" onclick="toggleTheme()" title="Modo Oscuro/Normal">🌓</button>
-            <button class="btn-icon" onclick="openAdmin()" title="Administración">⚙️</button>
+        <div class="header">
+            <button onclick="document.body.setAttribute('data-theme', document.body.getAttribute('data-theme')==='dark'?'light':'dark')" style="background:none; border:none; cursor:pointer; font-size:1.2rem;">🌓</button>
+            <h2>MobileNet</h2>
+            <button style="background:none; border:none; cursor:pointer; font-size:1.2rem;">⚙️</button>
         </div>
 
-        <h2>MobileNet Solutions</h2>
         <div class="clock" id="reloj">00:00:00</div>
 
         <div class="form-group">
-            <label for="dni">DNI:</label>
-            <input type="number" id="dni" placeholder="Ingrese su DNI" onkeyup="buscarColaborador()">
+            <label>DNI / CE:</label>
+            <input type="number" id="dni" placeholder="Cargando base de datos..." disabled onkeyup="buscar()">
         </div>
 
         <div class="form-group">
-            <label for="asesor">Asesor:</label>
-            <input type="text" id="asesor" readonly placeholder="Buscando...">
+            <label>Asesor:</label>
+            <input type="text" id="asesor" readonly placeholder="Esperando identificación...">
         </div>
 
         <div class="form-group">
-            <label for="motivo">Motivo:</label>
+            <label>Motivo:</label>
             <select id="motivo">
                 <option value="Ingreso">Ingreso</option>
                 <option value="Salida Almuerzo">Salida Almuerzo</option>
@@ -84,196 +54,101 @@
             </select>
         </div>
 
-        <div class="camera-container">
+        <div class="camera-box">
             <video id="video" autoplay playsinline></video>
         </div>
 
-        <button class="primary" id="btnRegistrar" onclick="registrarAsistencia()" disabled>Registrar Asistencia</button>
-        <div class="loader" id="loader">Procesando y guardando en Drive...</div>
-    </div>
-
-    <div class="modal" id="adminModal">
-        <div class="modal-content">
-            <h3 id="adminTitle">Acceso Administrativo</h3>
-            <div id="adminLogin">
-                <input type="password" id="adminPass" placeholder="Contraseña" style="margin-bottom: 10px;">
-                <button class="primary" onclick="verificarAdmin()">Ingresar</button>
-                <button class="btn-icon" onclick="closeAdmin()" style="margin-top: 10px; font-size: 1rem;">Cancelar</button>
-            </div>
-            <div id="adminDashboard" style="display: none;">
-                <p>🚧 Módulo Inventario en Construcción 🚧</p>
-                <button class="primary" onclick="closeAdmin()">Cerrar</button>
-            </div>
-        </div>
+        <button class="main" id="btn" onclick="enviar()" disabled>Registrar Asistencia</button>
+        <div class="loader" id="loading">Enviando a Google Drive...</div>
     </div>
 
     <script>
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbxLlfyDO-6r1eYm0Q93UP4PZQ7S1PhuasOZlgyC0orKzEtrCvvXUO-QVAZOCRek2mMf/exec"; 
-        let datosLocales = [];
-        let asesorActual = null;
-        let videoStream = null;
+        const GAS_URL = "TU_URL_DE_APPS_SCRIPT_AQUI"; 
+        let db = [];
+        let usuario = null;
 
-        // Inicialización
         window.onload = async () => {
-            iniciarReloj();
-            iniciarCamara();
-            await cargarDatosEECC();
+            setInterval(() => {
+                document.getElementById("reloj").textContent = new Date().toLocaleTimeString('es-PE');
+            }, 1000);
+
+            // Iniciar Cámara
+            const v = document.getElementById('video');
+            try {
+                const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                v.srcObject = s;
+            } catch (e) { alert("Acceso a cámara denegado."); }
+
+            // Cargar base de datos (Col A y Col B)
+            try {
+                const r = await fetch(GAS_URL);
+                const res = await r.json();
+                if (res.status === "success") {
+                    db = res.data;
+                    document.getElementById("dni").disabled = false;
+                    document.getElementById("dni").placeholder = "Ingrese su DNI";
+                }
+            } catch (e) { document.getElementById("dni").placeholder = "Error de conexión"; }
         };
 
-        // Reloj
-        function iniciarReloj() {
-            setInterval(() => {
-                const now = new Date();
-                document.getElementById("reloj").textContent = now.toLocaleTimeString('es-PE', { hour12: true });
-            }, 1000);
-        }
-
-        // Tema
-        function toggleTheme() {
-            const body = document.body;
-            body.setAttribute('data-theme', body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-        }
-
-        // Cargar datos del script
-        async function cargarDatosEECC() {
-            try {
-                const response = await fetch(GAS_URL);
-                const result = await response.json();
-                if (result.status === "success") {
-                    datosLocales = result.data;
-                }
-            } catch (err) {
-                console.error("Error cargando base de datos", err);
-            }
-        }
-
-        // Lógica de DNI
-        function buscarColaborador() {
-            const dniInput = document.getElementById("dni").value;
-            const inputAsesor = document.getElementById("asesor");
-            const btn = document.getElementById("btnRegistrar");
-
-            const encontrado = datosLocales.find(row => row.dni === dniInput);
-            
-            if (encontrado) {
-                asesorActual = encontrado;
-                inputAsesor.value = encontrado.asesor;
-                btn.disabled = false;
+        function buscar() {
+            const val = document.getElementById("dni").value;
+            const res = db.find(u => u.dni === val);
+            if (res) {
+                usuario = res;
+                document.getElementById("asesor").value = res.asesor;
+                document.getElementById("btn").disabled = false;
             } else {
-                asesorActual = null;
-                inputAsesor.value = "";
-                btn.disabled = true;
+                usuario = null;
+                document.getElementById("asesor").value = val ? "No registrado" : "";
+                document.getElementById("btn").disabled = true;
             }
         }
 
-        // Cámara
-        async function iniciarCamara() {
-            const video = document.getElementById('video');
-            try {
-                videoStream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: "user" } // Usa "environment" para trasera
-                });
-                video.srcObject = videoStream;
-            } catch (err) {
-                alert("Permita el acceso a la cámara para registrar asistencia.");
-            }
-        }
-
-        // Cálculo de Tardanza
-        function calcularTardanza() {
-            const motivo = document.getElementById("motivo").value;
-            if (motivo !== "Ingreso") return 0;
-
-            const now = new Date();
-            const limite = new Date();
-            limite.setHours(9, 5, 0, 0); // 09:05 AM
-
-            if (now > limite) {
-                const horaOficial = new Date();
-                horaOficial.setHours(9, 0, 0, 0); // Calculado desde las 09:00
-                const diffMs = now - horaOficial;
-                return Math.floor(diffMs / 60000); // Minutos
-            }
-            return 0;
-        }
-
-        // Enviar Registro
-        async function registrarAsistencia() {
-            if (!asesorActual) return;
-
-            const btn = document.getElementById("btnRegistrar");
-            const loader = document.getElementById("loader");
-            const video = document.getElementById('video');
-            
+        async function enviar() {
+            const btn = document.getElementById("btn");
+            const load = document.getElementById("loading");
             btn.style.display = "none";
-            loader.style.display = "block";
+            load.style.display = "block";
 
-            // Capturar en Canvas y convertir a .webp
+            // Captura foto
             const canvas = document.createElement('canvas');
+            const video = document.getElementById('video');
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             canvas.getContext('2d').drawImage(video, 0, 0);
-            const imageWebp = canvas.toDataURL('image/webp', 0.8);
+            const img = canvas.toDataURL('image/webp', 0.7);
 
             const now = new Date();
-            const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            const tardanza = (document.getElementById("motivo").value === "Ingreso" && (now.getHours() > 9 || (now.getHours() === 9 && now.getMinutes() > 5))) 
+                ? (Math.floor((now - new Date().setHours(9,0,0,0))/60000)) : 0;
 
             const payload = {
-                hora: now.toLocaleTimeString('es-PE', { hour12: true }),
-                fecha: now.toLocaleDateString('es-PE'),
-                mes: meses[now.getMonth()],
-                anio: now.getFullYear(),
-                asesor: asesorActual.asesor,
-                supervisor: asesorActual.supervisor || "N/A",
+                dni: usuario.dni,
+                asesor: usuario.asesor,
+                supervisor: usuario.supervisor,
+                area: usuario.area,
                 motivo: document.getElementById("motivo").value,
-                tardanza: calcularTardanza(),
-                area: asesorActual.area || "N/A",
-                observaciones: "",
-                dni: asesorActual.dni,
-                image: imageWebp
+                hora: now.toLocaleTimeString('es-PE'),
+                fecha: now.toLocaleDateString('es-PE'),
+                mes: now.toLocaleString('es-PE', { month: 'long' }),
+                anio: now.getFullYear(),
+                tardanza: tardanza,
+                image: img
             };
 
             try {
-                // Fetch usando text/plain para evadir el preflight CORS de Vercel a GAS
-                const response = await fetch(GAS_URL, {
+                const r = await fetch(GAS_URL, {
                     method: 'POST',
                     body: JSON.stringify(payload),
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                    headers: { 'Content-Type': 'text/plain' }
                 });
-                
-                const result = await response.json();
-                if (result.status === "success") {
-                    alert("Asistencia registrada correctamente.");
-                    document.getElementById("dni").value = "";
-                    document.getElementById("asesor").value = "";
-                    btn.disabled = true;
-                } else {
-                    alert("Error guardando: " + result.message);
+                const res = await r.json();
+                if (res.status === "success") {
+                    alert("¡Asistencia registrada!");
+                    location.reload();
                 }
-            } catch (err) {
-                alert("Error de conexión: " + err);
-            } finally {
-                btn.style.display = "block";
-                loader.style.display = "none";
-            }
-        }
-
-        // Funciones Admin
-        function openAdmin() { document.getElementById("adminModal").style.display = "flex"; }
-        function closeAdmin() { 
-            document.getElementById("adminModal").style.display = "none"; 
-            document.getElementById("adminPass").value = "";
-            document.getElementById("adminLogin").style.display = "block";
-            document.getElementById("adminDashboard").style.display = "none";
-        }
-        function verificarAdmin() {
-            const pass = document.getElementById("adminPass").value;
-            if (pass === "admin123") { // Cambia esto por tu contraseña deseada
-                document.getElementById("adminLogin").style.display = "none";
-                document.getElementById("adminDashboard").style.display = "block";
-            } else {
-                alert("Contraseña incorrecta");
-            }
+            } catch (e) { alert("Error al enviar."); btn.style.display = "block"; load.style.display = "none"; }
         }
     </script>
 </body>
