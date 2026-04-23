@@ -3,135 +3,278 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asistencia | MobileNet Solutions</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>MobileNet Solutions - Asistencia</title>
     <style>
-        body { background-color: #f8fafc; font-family: ui-sans-serif, system-ui, sans-serif; }
-        .main-card { border-radius: 2.5rem; border-top: 6px solid #0ea5e9; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); }
-        .input-field { border-radius: 1.2rem; border: 1.5px solid #e2e8f0; text-align: center; font-weight: 700; outline: none; transition: 0.3s; }
-        .input-field:focus { border-color: #0ea5e9; box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1); }
-        .btn-capture { border-radius: 1.2rem; background-color: #475569; color: white; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; }
-        .btn-register { border-radius: 1.2rem; background-color: #bae6fd; color: #0369a1; font-weight: 800; text-transform: uppercase; transition: 0.3s; }
-        .btn-register.active { background-color: #7dd3fc; color: #0369a1; box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.3); cursor: pointer; }
-        .label-title { font-size: 0.65rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-left: 0.5rem; margin-bottom: 0.4rem; display: block; }
-        video, img { border-radius: 1.5rem; background-color: #000; object-fit: cover; }
+        :root {
+            --bg-color: #f0f4f8;
+            --container-bg: #ffffff;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --primary-blue: #0056b3;
+            --light-blue: #e0f0ff;
+            --border-color: #cccccc;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --container-bg: #1e1e1e;
+            --text-main: #ffffff;
+            --text-muted: #aaaaaa;
+            --primary-blue: #4da3ff;
+            --light-blue: #003366;
+            --border-color: #444444;
+        }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; transition: background-color 0.3s; }
+        .container { background-color: var(--container-bg); padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; position: relative; transition: background-color 0.3s; }
+        
+        .header-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn-icon { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-main); }
+        
+        h2 { text-align: center; color: var(--primary-blue); margin-top: 0; }
+        .clock { font-size: 2rem; text-align: center; font-weight: bold; margin-bottom: 20px; color: var(--primary-blue); background-color: var(--light-blue); padding: 10px; border-radius: 8px; }
+        
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 500; }
+        input, select { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; box-sizing: border-box; background-color: var(--container-bg); color: var(--text-main); }
+        input[readonly] { background-color: var(--bg-color); }
+        
+        .camera-container { width: 100%; aspect-ratio: 4/3; background-color: #000; border-radius: 8px; overflow: hidden; margin-bottom: 15px; position: relative; }
+        video { width: 100%; height: 100%; object-fit: cover; }
+        
+        button.primary { width: 100%; padding: 12px; background-color: var(--primary-blue); color: white; border: none; border-radius: 6px; font-size: 1.1rem; cursor: pointer; font-weight: bold; transition: opacity 0.2s; }
+        button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        button.primary:hover:not(:disabled) { opacity: 0.9; }
+
+        .loader { display: none; text-align: center; margin-top: 10px; color: var(--primary-blue); }
+
+        /* Modal Admin */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 100; }
+        .modal-content { background: var(--container-bg); padding: 20px; border-radius: 8px; width: 300px; text-align: center; }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4">
+<body>
 
-    <div class="max-w-md w-full space-y-4">
-        <div class="text-center">
-            <div class="bg-[#0033A0] inline-block px-10 py-5 rounded-3xl shadow-xl mb-2">
-                <h1 class="text-white font-black text-2xl tracking-tighter uppercase italic">MobileNet</h1>
-            </div>
-            <p class="text-slate-400 font-bold text-[10px] tracking-[0.2em] uppercase">Solutions SRL</p>
+    <div class="container">
+        <div class="header-controls">
+            <button class="btn-icon" onclick="toggleTheme()" title="Modo Oscuro/Normal">🌓</button>
+            <button class="btn-icon" onclick="openAdmin()" title="Administración">⚙️</button>
         </div>
 
-        <div class="bg-white main-card p-8 space-y-6">
-            <form id="attendanceForm" class="space-y-5">
-                
-                <div>
-                    <label class="label-title">Documento de Identidad</label>
-                    <input type="number" id="dni" required placeholder="00000000" class="w-full input-field p-5 text-3xl text-slate-700">
-                    <div id="advisorInfo" class="hidden mt-3 p-3 bg-blue-50 rounded-2xl border-l-4 border-blue-500">
-                        <p id="advisorName" class="text-blue-700 font-black text-center text-xs uppercase tracking-tight"></p>
-                    </div>
-                </div>
+        <h2>MobileNet Solutions</h2>
+        <div class="clock" id="reloj">00:00:00</div>
 
-                <div>
-                    <label class="label-title">Evidencia Fotográfica</label>
-                    <div class="relative aspect-[4/3] mb-3">
-                        <video id="video" autoplay playsinline class="w-full h-full"></video>
-                        <img id="preview" class="hidden absolute inset-0 w-full h-full">
-                    </div>
-                    <button type="button" id="snap" class="w-full py-4 btn-capture">Capturar Foto</button>
-                </div>
+        <div class="form-group">
+            <label for="dni">DNI:</label>
+            <input type="number" id="dni" placeholder="Ingrese su DNI" onkeyup="buscarColaborador()">
+        </div>
 
-                <div>
-                    <label class="label-title">Motivo</label>
-                    <select id="reason" class="w-full input-field p-4 text-sm text-slate-600 appearance-none cursor-pointer">
-                        <option value="INGRESO DIARIO">INGRESO DIARIO</option>
-                        <option value="CITA CON CLIENTE">CITA CON CLIENTE</option>
-                        <option value="PERMISO CON SUPERVISOR">PERMISO CON SUPERVISOR</option>
-                    </select>
-                </div>
+        <div class="form-group">
+            <label for="asesor">Asesor:</label>
+            <input type="text" id="asesor" readonly placeholder="Buscando...">
+        </div>
 
-                <input type="text" id="obs" placeholder="Observaciones..." class="w-full input-field p-4 text-sm font-normal italic bg-slate-50 border-none">
+        <div class="form-group">
+            <label for="motivo">Motivo:</label>
+            <select id="motivo">
+                <option value="Ingreso">Ingreso</option>
+                <option value="Salida Almuerzo">Salida Almuerzo</option>
+                <option value="Retorno Almuerzo">Retorno Almuerzo</option>
+                <option value="Salida">Salida</option>
+            </select>
+        </div>
 
-                <button type="submit" id="submitBtn" disabled class="w-full py-6 btn-register text-xl opacity-50 cursor-not-allowed">
-                    REGISTRAR
-                </button>
-            </form>
+        <div class="camera-container">
+            <video id="video" autoplay playsinline></video>
+        </div>
+
+        <button class="primary" id="btnRegistrar" onclick="registrarAsistencia()" disabled>Registrar Asistencia</button>
+        <div class="loader" id="loader">Procesando y guardando en Drive...</div>
+    </div>
+
+    <div class="modal" id="adminModal">
+        <div class="modal-content">
+            <h3 id="adminTitle">Acceso Administrativo</h3>
+            <div id="adminLogin">
+                <input type="password" id="adminPass" placeholder="Contraseña" style="margin-bottom: 10px;">
+                <button class="primary" onclick="verificarAdmin()">Ingresar</button>
+                <button class="btn-icon" onclick="closeAdmin()" style="margin-top: 10px; font-size: 1rem;">Cancelar</button>
+            </div>
+            <div id="adminDashboard" style="display: none;">
+                <p>🚧 Módulo Inventario en Construcción 🚧</p>
+                <button class="primary" onclick="closeAdmin()">Cerrar</button>
+            </div>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwTdfWqQJq_S5RXQCoK94A918Z3WGkCIDRbwecnsurOmbbWiwQCvVjGM9Cum_C62n4Ung/exec";
-        let advisorsList = [], capturedImg = "";
-        const video = document.getElementById('video'), dniInput = document.getElementById('dni'), infoBox = document.getElementById('advisorInfo'), nameText = document.getElementById('advisorName'), submitBtn = document.getElementById('submitBtn');
+        const GAS_URL = "TU_URL_DE_APPS_SCRIPT_AQUI"; 
+        let datosLocales = [];
+        let asesorActual = null;
+        let videoStream = null;
 
-        // 1. Cargar Cámara y Base de Datos
-        navigator.mediaDevices.getUserMedia({video: {facingMode:"user"}}).then(s => video.srcObject = s);
-        fetch(SCRIPT_URL).then(r => r.json()).then(data => {
-            advisorsList = data;
-            console.log("Datos cargados:", advisorsList.length);
-        });
+        // Inicialización
+        window.onload = async () => {
+            iniciarReloj();
+            iniciarCamara();
+            await cargarDatosEECC();
+        };
 
-        // 2. Validación de DNI (Activa el botón)
-        dniInput.oninput = () => {
-            const val = dniInput.value.trim();
-            const found = advisorsList.find(a => a.dni === val);
-            
-            if (found) {
-                nameText.innerText = `ASESOR: ${found.nombre}`;
-                infoBox.classList.remove('hidden');
-                submitBtn.disabled = false;
-                submitBtn.classList.add('active');
-                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-            } else {
-                infoBox.classList.add('hidden');
-                submitBtn.disabled = true;
-                submitBtn.classList.remove('active', 'opacity-50', 'cursor-not-allowed');
-                submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        // Reloj
+        function iniciarReloj() {
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById("reloj").textContent = now.toLocaleTimeString('es-PE', { hour12: true });
+            }, 1000);
+        }
+
+        // Tema
+        function toggleTheme() {
+            const body = document.body;
+            body.setAttribute('data-theme', body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        }
+
+        // Cargar datos del script
+        async function cargarDatosEECC() {
+            try {
+                const response = await fetch(GAS_URL);
+                const result = await response.json();
+                if (result.status === "success") {
+                    datosLocales = result.data;
+                }
+            } catch (err) {
+                console.error("Error cargando base de datos", err);
             }
-        };
+        }
 
-        // 3. Captura
-        document.getElementById('snap').onclick = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-            capturedImg = canvas.toDataURL('image/jpeg', 0.6);
-            document.getElementById('preview').src = capturedImg;
-            document.getElementById('preview').classList.remove('hidden');
-            document.getElementById('snap').innerText = "VOLVER A CAPTURAR";
-        };
+        // Lógica de DNI
+        function buscarColaborador() {
+            const dniInput = document.getElementById("dni").value;
+            const inputAsesor = document.getElementById("asesor");
+            const btn = document.getElementById("btnRegistrar");
 
-        // 4. Envío
-        document.getElementById('attendanceForm').onsubmit = async (e) => {
-            e.preventDefault();
-            if(!capturedImg) return alert("Por favor, capture su foto.");
+            const encontrado = datosLocales.find(row => row.dni === dniInput);
             
-            submitBtn.innerText = "REGISTRANDO..."; submitBtn.disabled = true;
+            if (encontrado) {
+                asesorActual = encontrado;
+                inputAsesor.value = encontrado.asesor;
+                btn.disabled = false;
+            } else {
+                asesorActual = null;
+                inputAsesor.value = "";
+                btn.disabled = true;
+            }
+        }
+
+        // Cámara
+        async function iniciarCamara() {
+            const video = document.getElementById('video');
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: "user" } // Usa "environment" para trasera
+                });
+                video.srcObject = videoStream;
+            } catch (err) {
+                alert("Permita el acceso a la cámara para registrar asistencia.");
+            }
+        }
+
+        // Cálculo de Tardanza
+        function calcularTardanza() {
+            const motivo = document.getElementById("motivo").value;
+            if (motivo !== "Ingreso") return 0;
+
+            const now = new Date();
+            const limite = new Date();
+            limite.setHours(9, 5, 0, 0); // 09:05 AM
+
+            if (now > limite) {
+                const horaOficial = new Date();
+                horaOficial.setHours(9, 0, 0, 0); // Calculado desde las 09:00
+                const diffMs = now - horaOficial;
+                return Math.floor(diffMs / 60000); // Minutos
+            }
+            return 0;
+        }
+
+        // Enviar Registro
+        async function registrarAsistencia() {
+            if (!asesorActual) return;
+
+            const btn = document.getElementById("btnRegistrar");
+            const loader = document.getElementById("loader");
+            const video = document.getElementById('video');
+            
+            btn.style.display = "none";
+            loader.style.display = "block";
+
+            // Capturar en Canvas y convertir a .webp
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            const imageWebp = canvas.toDataURL('image/webp', 0.8);
+
+            const now = new Date();
+            const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+            const payload = {
+                hora: now.toLocaleTimeString('es-PE', { hour12: true }),
+                fecha: now.toLocaleDateString('es-PE'),
+                mes: meses[now.getMonth()],
+                anio: now.getFullYear(),
+                asesor: asesorActual.asesor,
+                supervisor: asesorActual.supervisor || "N/A",
+                motivo: document.getElementById("motivo").value,
+                tardanza: calcularTardanza(),
+                area: asesorActual.area || "N/A",
+                observaciones: "",
+                dni: asesorActual.dni,
+                image: imageWebp
+            };
 
             try {
-                await fetch(SCRIPT_URL, {
+                // Fetch usando text/plain para evadir el preflight CORS de Vercel a GAS
+                const response = await fetch(GAS_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify({
-                        dni: dniInput.value,
-                        motivo: document.getElementById('reason').value,
-                        obs: document.getElementById('obs').value,
-                        foto: capturedImg
-                    })
+                    body: JSON.stringify(payload),
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
                 });
-                alert("✅ Registro exitoso.");
-                location.reload();
+                
+                const result = await response.json();
+                if (result.status === "success") {
+                    alert("Asistencia registrada correctamente.");
+                    document.getElementById("dni").value = "";
+                    document.getElementById("asesor").value = "";
+                    btn.disabled = true;
+                } else {
+                    alert("Error guardando: " + result.message);
+                }
             } catch (err) {
-                alert("❌ Error de red.");
-                submitBtn.innerText = "REGISTRAR"; submitBtn.disabled = false;
+                alert("Error de conexión: " + err);
+            } finally {
+                btn.style.display = "block";
+                loader.style.display = "none";
             }
-        };
+        }
+
+        // Funciones Admin
+        function openAdmin() { document.getElementById("adminModal").style.display = "flex"; }
+        function closeAdmin() { 
+            document.getElementById("adminModal").style.display = "none"; 
+            document.getElementById("adminPass").value = "";
+            document.getElementById("adminLogin").style.display = "block";
+            document.getElementById("adminDashboard").style.display = "none";
+        }
+        function verificarAdmin() {
+            const pass = document.getElementById("adminPass").value;
+            if (pass === "admin123") { // Cambia esto por tu contraseña deseada
+                document.getElementById("adminLogin").style.display = "none";
+                document.getElementById("adminDashboard").style.display = "block";
+            } else {
+                alert("Contraseña incorrecta");
+            }
+        }
     </script>
 </body>
 </html>
